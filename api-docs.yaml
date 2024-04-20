@@ -1,0 +1,612 @@
+openapi: 3.0.1
+info:
+  title: Bank API
+  description: API for bank
+  version: 1.0.0
+  contact:
+    email: rengga@mail.com
+
+servers:
+  - url: http://localhost:3000/v1
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /register:
+    post:
+      summary: Mendaftarkan pengguna baru
+      requestBody:
+        description: Data pengguna baru
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "nanang"
+                email:
+                  type: string
+                  example: "nanang@mail.com"
+                password:
+                  type: string
+                  example: "password"
+                profileData:
+                  type: object
+                  properties:
+                    identityType:
+                      type: string
+                      example: "KTP"
+                    identityNumber:
+                      type: string
+                      example: "9384756473"
+                    address:
+                      type: string
+                      example: "Jakarta"
+      responses:
+        201:
+          description: Pengguna berhasil didaftarkan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "nanang"
+                      email:
+                        type: string
+                        example: "nanang@mail.com"
+                      profile:
+                        type: object
+                        properties:
+                          identityType:
+                            type: string
+                            example: "KTP"
+                          identityNumber:
+                            type: string
+                            example: "9384756473"
+                          address:
+                            type: string
+                            example: "Jakarta"
+        400:
+          description: Email sudah ada atau data tidak lengkap
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "false"
+                  message:
+                    type: string
+                    example: "email already exist or name, email, and password are required"
+                  data:
+                    type: string
+                    example: "null"
+        # "400":
+        #   description: ketika data tidak lengkap
+        #   content:
+        #     application/json:
+        #       schema:
+        #         type: object
+        #         properties:
+        #           status:
+        #             type: string
+        #             example: "false"
+        #           message:
+        #             type: string
+        #             example: "name, email, and password are required"
+        #           data:
+        #             type: string
+        #             example: "null"
+  
+  /login:
+    post:
+      summary: Melakukan login
+      requestBody:
+        description: Data login
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "toti@example.com"
+                password:
+                  type: string
+                  example: "password"
+      responses:
+        200:
+          description: Login sukses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example : true
+                  message: 
+                    type: string
+                    example : "User logged in successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "toti"
+                      email:
+                        type: string
+                        example: "toti@example.com"
+                      token:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im90dGkifQ.7hP8yD4ZU8yHbX1XwKmZ3sDn8k7YXw9g"
+        400:
+          description: Email atau password salah atau data tidak lengkap
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "false"
+                  message:
+                    type: string
+                    example: "email or password are wrong or email and password are required"
+                  data:
+                    type: string
+                    example: "null"
+  /check-auth:
+    get:
+      summary: Memeriksa apakah autentikasi berhasil dijalankan
+      responses:
+        200:
+          description: Autentikasi berhasil
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "This User is already authorized"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "John Doe"
+                      email:
+                        type: string
+                        example: "john@example.com"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Token not provided!"
+                  data:
+                    type: string
+                    example: "null"
+      security:
+        - BearerAuth: []
+
+
+
+  /users:
+    get:
+      summary: Mendapatkan daftar pengguna
+      responses:
+        200:
+          description: Daftar pengguna
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: "John Doe"
+                        email:
+                          type: string
+                          example: "toti@example.com"
+        404:
+          description: Pengguna tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+  /users/{userId}:
+    get:
+      summary: Mendapatkan informasi pengguna berdasarkan ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: Informasi pengguna
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "John Doe"
+                      email:
+                        type: string
+                        example: "toti@example.com"
+                      profile:
+                        type: object
+                        properties:
+                          age:
+                            type: integer
+                            example: 30
+                          gender:
+                            type: string
+                            example: "male"
+        404:
+          description: Pengguna tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+  /make-accounts:
+    post:
+      summary: Membuat akun bank baru
+      requestBody:
+        description: Data akun bank baru
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  example: 1
+                bankName:
+                  type: string
+                  example: "Mandiri"
+                bankAccountNumber:
+                  type: string
+                  example: "948239219"
+                balance:
+                  type: number
+                  example: 1000000.00
+      responses:
+        201:
+          description: Akun bank berhasil dibuat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      userId:
+                        type: integer
+                        example: 1
+                      bankName:
+                        type: string
+                        example: "Mandiri"
+                      bankAccountNumber:
+                        type: string
+                        example: "948239219"
+                      balance:
+                        type: number
+                        example: 1000000.00
+  /accounts:
+    get:
+      summary: Mendapatkan daftar akun bank
+      responses:
+        200:
+          description: Daftar akun bank
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 2
+                        userId:
+                          type: integer
+                          example: 1
+                        bankName:
+                          type: string
+                          example: "Mandiri"
+                        bankAccountNumber:
+                          type: string
+                          example: "948239219"
+                        balance:
+                          type: number
+                          example: 1000000.00
+        404:
+          description: Akun bank tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "bank account don't have data yet"
+  /accounts/{accountId}:
+    get:
+      summary: Mendapatkan informasi akun bank berdasarkan ID
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 2
+      responses:
+        200:
+          description: Informasi akun bank
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2
+                      userId:
+                        type: integer
+                        example: 1
+                      bankName:
+                        type: string
+                        example: "Mandiri"
+                      bankAccountNumber:
+                        type: string
+                        example: "948239219"
+                      balance:
+                        type: number
+                        example: 1000000.00
+        404:
+          description: Akun bank tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "bank account not found"
+  /make-transactions:
+    post:
+      summary: Membuat transaksi baru
+      requestBody:
+        description: Data transaksi baru
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sourceAccountId:
+                  type: integer
+                  example: 3
+                destinationAccountId:
+                  type: integer
+                  example: 2
+                amount:
+                  type: number
+                  example: 100.00
+      responses:
+        201:
+          description: Transaksi berhasil dibuat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Transaction successful"
+        400:
+          description: Saldo tidak cukup
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Insufficient balance"
+        404:
+          description: Akun sumber atau tujuan tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Source or destination account not found"
+  /transactions:
+    get:
+      summary: Mendapatkan daftar transaksi
+      responses:
+        200:
+          description: Daftar transaksi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 2
+                        sourceAccountId:
+                          type: integer
+                          example: 3
+                        destinationAccountId:
+                          type: integer
+                          example: 2
+                        amount:
+                          type: number
+                          example: 100.00
+        404:
+          description: Transaksi tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Transaction don't have data yet"
+  /transactions/{transactionId}:
+    get:
+      summary: Mendapatkan informasi transaksi berdasarkan ID
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 2
+      responses:
+        200:
+          description: Informasi transaksi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2
+                      amount:
+                        type: number
+                        example: 100
+                      sender:
+                        type: string
+                        example: "John Doe"
+                      recipient:
+                        type: string
+                        example: "Jane Doe"
+        404:
+          description: Transaksi tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Transaction not found"

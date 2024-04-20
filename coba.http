@@ -1,0 +1,67 @@
+### POST /api/v1/register
+POST http://localhost:3000/v1/register
+Content-Type: application/json
+
+{
+  "name": "norman",
+  "email": "norman@mail.com",
+  "password": "norman123",
+  "profileData": {
+    "identityType": "KTP",
+    "identityNumber": "9138091283213",
+    "address": "Lampung"
+  }
+}
+
+### login
+POST http://localhost:3000/v1/login
+Content-Type: application/json
+
+{
+    "email":"tate2@mail.com",
+    "password":"tate123"
+}
+
+### check-auth
+GET http://localhost:3000/v1/check-auth
+# Authorization: Bearer tokentoken
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo4LCJuYW1lIjoidGF0ZTIiLCJlbWFpbCI6InRhdGUyQG1haWwuY29tIn0sImlhdCI6MTcxMzYyNTQ4OX0.TPgCnoIxzI1LpjnzhpTrYu_kJ2K6nZH1a7MgVCPehsM
+### GET /api/v1/users
+GET http://localhost:3000/v1/users
+# Authorization: Bearer iejiqwhtuiwkegbfjkg
+
+### GET /api/v1/users/:userId
+GET http://localhost:3000/v1/users/1
+
+### POST /api/v1/make-accounts
+POST http://localhost:3000/v1/make-accounts
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "bankName": "Mandiri",
+  "bankAccountNumber": "948239219",
+  "balance": 1000000.00
+}
+
+### GET /api/v1/accounts
+GET http://localhost:3000/v1/accounts
+
+### GET /api/v1/accounts/:accountId
+GET http://localhost:3000/v1/accounts/2
+
+### POST /api/v1/
+POST http://localhost:3000/v1/make-transactions
+Content-Type: application/json
+
+{
+  "sourceAccountId": 3,
+  "destinationAccountId": 2,
+  "amount": 100.00
+}
+
+### GET /api/v1/transactions
+GET http://localhost:3000/v1/transactions
+
+### GET /api/v1/transactions/:transactionId:
+GET http://localhost:3000/v1/transactions/2
